@@ -151,7 +151,7 @@
     }
 
     function getAllArtistsURIFromCurrentTrack() {
-        let metadata = Spicetify.Player.data?.track.metadata
+        let metadata = Spicetify.Player.data?.item.metadata
         let ArtistsURI = [metadata.artist_uri]
         for (let i = 1; i < 10; i++) {
             if (metadata[`artist_uri:${i}`]) {
@@ -179,7 +179,7 @@
             } else if (src == "recursive") {
                 return []
             } else {
-                targetedArtistID = Spicetify.Player.data?.track.metadata.artist_uri.split(":")[2]
+                targetedArtistID = Spicetify.Player.data?.item.metadata.artist_uri.split(":")[2]
             }
             let artistRes = await Spicetify.CosmosAsync.get(`wg://artist/v1/${targetedArtistID}/desktop?format=json`)
             if (!artistRes.related_artists.artists) {
@@ -440,8 +440,8 @@
     }
 
     async function updateLastFmTags() {
-        let artistName = Spicetify.Player.data.track.metadata["artist_name"]
-        let trackName = Spicetify.Player.data.track.metadata["title"]
+        let artistName = Spicetify.Player.data.item.metadata["artist_name"]
+        let trackName = Spicetify.Player.data.item.metadata["title"]
 
         let res = await fetchDataFromLastFM(artistName, trackName)
 
@@ -499,7 +499,7 @@
         Spicetify.PopupModal.display({
             title:
                 `Genres of "` +
-                Spicetify.Player.data.track.metadata.title
+                Spicetify.Player.data.item.metadata.title
                     .replace(/\(.+?\)/g, "")
                     .replace(/\[.+?\]/g, "")
                     .replace(/\s\-\s.+?$/, "")
@@ -543,7 +543,7 @@
     }
 
     async function updateGenres() {
-        if (!CONFIG.state || Spicetify.Player.data.track.metadata.is_local || Spicetify.URI.fromString(Spicetify.Player.data.track.uri).type !== "track") {
+        if (!CONFIG.state || Spicetify.Player.data.item.isLocal || Spicetify.URI.fromString(Spicetify.Player.data.item.uri).type !== "track") {
             removeGenresFromUI()
             return
         }
